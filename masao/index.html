@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Geo Explorer</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="container header-content">
+      <h1><i class="fas fa-map-marker-alt"></i> Geo Explorer</h1>
+      <div class="header-right">
+        <label class="dark-toggle">
+          <input type="checkbox" id="darkModeToggle" /> 🌙
+        </label>
+        <div id="userMenu" class="user-menu hidden">
+          <span id="usernameDisplay"></span>
+          <div class="dropdown">
+            <button class="dropbtn">▼</button>
+            <div class="dropdown-content">
+              <a href="#" onclick="logout()">Logout</a>
+            </div>
+          </div>
+        </div>
+        <button id="loginBtn" onclick="window.location.href='login.html'">Login</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <nav class="side-nav">
+      <button class="nav-btn" onclick="switchTab('map')">🗺️ Map</button>
+      <button class="nav-btn" onclick="switchTab('favorites')">⭐ Favorites</button>
+      <button class="nav-btn" onclick="switchTab('restaurants')">🍴 Nearby</button>
+    </nav>
+
+    <main class="main-content">
+      <div class="search-container">
+        <input id="search-box" type="text" placeholder="Search places..." />
+      </div>
+
+      <section id="map-tab" class="tab-content active">
+        <div id="map" class="centered-map"></div>
+        <div class="action-buttons">
+          <button onclick="findMyLocation()">My Location</button>
+          <select id="place-type" onchange="findNearbyPlaces()">
+            <option value="restaurant">Restaurants</option>
+            <option value="cafe">Cafes</option>
+            <option value="bar">Bars</option>
+          </select>
+          <button onclick="saveLocation()">Save Location</button>
+        </div>
+      </section>
+
+      <section id="favorites-tab" class="tab-content">
+        <h3>Favorites</h3>
+        <div id="favorites-list"></div>
+      </section>
+
+      <section id="restaurants-tab" class="tab-content">
+        <h3>Nearby Places</h3>
+        <div id="restaurants-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5FR9Ab1qqgL8H8D-Ed-VLr9CKPiPovOU&libraries=places&callback=initMap" async defer></script>
+</body>
+</html>
