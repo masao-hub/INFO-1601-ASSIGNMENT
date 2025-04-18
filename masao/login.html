@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Login - Geo Explorer</title>
   <link rel="stylesheet" href="styles.css">
+  <!-- Add SweetAlert for better alerts -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="login-body">
   <div class="login-box">
@@ -16,19 +18,32 @@
 
   <script>
     function login() {
-      const user = document.getElementById('username').value;
-      const pass = document.getElementById('password').value;
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
 
-      if (user === 'bob' && pass === 'bobpass') {
+      // Basic validation
+      if (!user || !pass) {
+        Swal.fire('Error', 'Please enter both username and password', 'error');
+        return;
+      }
+
+      // In a real app, you would validate against a database
+      // For demo purposes, we'll use these hardcoded credentials
+      const validUsers = {
+        'bob': 'bobpass',
+        'admin': 'admin123'
+      };
+
+      if (validUsers[user] && validUsers[user] === pass) {
         localStorage.setItem('loggedIn', 'true');
         localStorage.setItem('username', user);
-        window.location.href = 'index.html';
+        Swal.fire('Success', 'Login successful!', 'success').then(() => {
+          window.location.href = 'index.html';
+        });
       } else {
-        document.getElementById('login-status').innerText = 'Invalid credentials';
+        Swal.fire('Error', 'Invalid credentials', 'error');
       }
     }
-
-    
   </script>
 </body>
 </html>
