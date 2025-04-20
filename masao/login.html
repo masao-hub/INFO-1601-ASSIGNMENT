@@ -4,223 +4,104 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Geo Explorer</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-    :root {
-      --primary-color: #1DCF9F;
-      --primary-dark: #169976;
-      --text-dark: #333;
-      --text-light: #fff;
-      --bg-light: #f8f9fa;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      --transition: all 0.3s ease;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .login-box {
-      background: white;
-      padding: 2.5rem;
-      border-radius: 15px;
-      box-shadow: var(--shadow);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      transition: var(--transition);
-    }
-
-    .login-box::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 5px;
-      background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
-    }
-
-    .login-box:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-    }
-
-    .login-box h2 {
-      color: var(--text-dark);
-      margin-bottom: 1.5rem;
-      font-size: 1.8rem;
-      font-weight: 600;
-    }
-
-    .input-group {
-      position: relative;
-      margin-bottom: 1.5rem;
-      text-align: left;
-    }
-
-    .input-group i {
-      position: absolute;
-      top: 50%;
-      left: 15px;
-      transform: translateY(-50%);
-      color: #aaa;
-    }
-
-    .login-box input {
-      width: 100%;
-      padding: 12px 15px 12px 40px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      transition: var(--transition);
-    }
-
-    .login-box input:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(29, 207, 159, 0.2);
-      outline: none;
-    }
-
-    .login-box button {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-      margin-top: 0.5rem;
-    }
-
-    .login-box button:hover {
-      background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
-      transform: translateY(-2px);
-    }
-
-    .login-box button:active {
-      transform: translateY(0);
-    }
-
-    .login-footer {
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      color: #666;
-    }
-
-    .login-footer a {
-      color: var(--primary-color);
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .login-footer a:hover {
-      text-decoration: underline;
-    }
-
-    #login-status {
-      margin-top: 1rem;
-      color: #e74c3c;
-      font-size: 0.9rem;
-      min-height: 20px;
-    }
-
-    @media (max-width: 480px) {
-      .login-box {
-        padding: 2rem 1.5rem;
-        margin: 0 1rem;
-      }
-    }
-  </style>
 </head>
 <body class="login-body">
-  <div class="login-box">
-    <h2>Welcome Back</h2>
-    
-    <div class="input-group">
-      <i class="fas fa-user"></i>
-      <input type="text" id="username" placeholder="Username" autocomplete="username">
+  <div class="login-container">
+    <div class="login-left">
+      <div class="login-left-content">
+        <h1><i class="fas fa-map-marker-alt"></i> Geo Explorer</h1>
+        <p>Discover the world around you with our interactive map and location tools.</p>
+      </div>
     </div>
     
-    <div class="input-group">
-      <i class="fas fa-lock"></i>
-      <input type="password" id="password" placeholder="Password" autocomplete="current-password">
-    </div>
-    
-    <button onclick="login()">Login</button>
-    <p id="login-status"></p>
-    
-    <div class="login-footer">
-      Don't have an account? <a href="#">Sign up</a>
+    <div class="login-right">
+      <button class="dark-mode-toggle">
+        <i class="fas fa-moon"></i>
+      </button>
+      
+      <div class="login-card">
+        <div class="login-logo">
+          <i class="fas fa-map-marked-alt"></i>
+          <h2>Welcome Back</h2>
+        </div>
+        
+        <form class="login-form" onsubmit="event.preventDefault(); login()">
+          <div class="input-group">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" id="username" placeholder="Username" required>
+          </div>
+          
+          <div class="input-group">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" id="password" placeholder="Password" required>
+          </div>
+          
+          <div class="login-options">
+            <label class="remember-me">
+              <input type="checkbox" id="remember-me"> Remember me
+            </label>
+            <a href="#" class="forgot-password">Forgot password?</a>
+          </div>
+          
+          <button type="submit" class="login-btn">Login</button>
+          
+          <div class="login-footer">
+            Don't have an account? <a href="register.html">Register</a>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
+  <script src="script.js"></script>
   <script>
+    // Initialize with default user if none exists
+    if (!localStorage.getItem('geoExplorerUsers')) {
+      const defaultUsers = {
+        "bob": {
+          username: "bob",
+          email: "bob@example.com",
+          password: "bobpass",
+          createdAt: new Date().toISOString()
+        }
+      };
+      localStorage.setItem('geoExplorerUsers', JSON.stringify(defaultUsers));
+    }
+
     function login() {
-      const user = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value.trim();
-      const statusElement = document.getElementById('login-status');
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
 
       // Basic validation
-      if (!user || !pass) {
-        statusElement.textContent = 'Please enter both username and password';
+      if (!username || !password) {
         Swal.fire('Error', 'Please enter both username and password', 'error');
         return;
       }
 
-      // Clear any previous error messages
-      statusElement.textContent = '';
+      // Get users from storage
+      const users = JSON.parse(localStorage.getItem('geoExplorerUsers'));
 
-      // In a real app, you would validate against a database
-      // For demo purposes, we'll use these hardcoded credentials
-      const validUsers = {
-        'bob': 'bobpass',
-        'admin': 'admin123'
-      };
-
-      if (validUsers[user] && validUsers[user] === pass) {
+      // Check credentials
+      if (users[username] && users[username].password === password) {
         localStorage.setItem('loggedIn', 'true');
-        localStorage.setItem('username', user);
-        Swal.fire({
-          title: 'Login Successful!',
-          text: 'Welcome back to Geo Explorer',
-          icon: 'success',
-          timer: 1500,
-          showConfirmButton: false
-        }).then(() => {
+        localStorage.setItem('username', username);
+        Swal.fire('Success', 'Login successful!', 'success').then(() => {
           window.location.href = 'index.html';
         });
       } else {
-        statusElement.textContent = 'Invalid username or password';
-        Swal.fire('Error', 'Invalid credentials', 'error');
+        Swal.fire('Error', 'Invalid username or password', 'error');
       }
     }
 
-    // Add keyboard support (Enter key to submit)
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('password').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          login();
-        }
-      });
+    // Dark mode toggle
+    document.querySelector('.dark-mode-toggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const icon = document.querySelector('.dark-mode-toggle i');
+      icon.classList.toggle('fa-moon');
+      icon.classList.toggle('fa-sun');
     });
   </script>
 </body>
