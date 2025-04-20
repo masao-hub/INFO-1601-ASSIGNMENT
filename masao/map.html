@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Map - Geo Explorer</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <header class="map-header">
+    <div class="header-container">
+      <!-- Title on far left -->
+      <div class="header-title">
+        <h1><i class="fas fa-map-marker-alt"></i> Geo Explorer</h1>
+      </div>
+      
+      <!-- Navigation buttons (Home and About) -->
+      <nav class="header-nav">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="about.html"><i class="fas fa-info-circle"></i> About</a>
+      </nav>
+      
+      <!-- Search bar centered -->
+      <div class="search-box-container">
+        <i class="fas fa-search"></i>
+        <input id="search-box" type="text" placeholder="Search places...">
+      </div>
+      
+      <!-- User menu on far right -->
+      <div class="user-section">
+        <div id="userMenu" class="user-menu hidden">
+          <div class="dropdown">
+            <button class="dropbtn">
+              <span id="usernameDisplay"></span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="dropdown-content">
+              <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+          </div>
+        </div>
+        <button id="loginBtn" class="login-btn" onclick="window.location.href='login.html'">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="map-layout">
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <button class="sidebar-btn active" onclick="switchTab('map')">
+          <i class="fas fa-map"></i>
+          <span>Map View</span>
+        </button>
+        <button class="sidebar-btn" onclick="switchTab('favorites')">
+          <i class="fas fa-star"></i>
+          <span>Favorites</span>
+        </button>
+        <button class="sidebar-btn" onclick="switchTab('restaurants')">
+          <i class="fas fa-utensils"></i>
+          <span>Nearby Places</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="ar-btn" id="ar-btn">
+          <i class="fas fa-vr-cardboard"></i> AR View
+        </button>
+      </div>
+    </aside>
+
+    <main class="map-main">
+      <div id="map" class="map-container"></div>
+      
+      <div class="map-controls">
+        <button class="map-control-btn" onclick="findMyLocation()">
+          <i class="fas fa-location-arrow"></i>
+        </button>
+        <button class="map-control-btn" onclick="saveLocation()">
+          <i class="fas fa-bookmark"></i>
+        </button>
+      </div>
+
+      <div id="ar-container" class="hidden">
+        <video id="ar-video" autoplay></video>
+        <canvas id="ar-canvas"></canvas>
+        <button id="exit-ar" class="ar-exit-btn">
+          <i class="fas fa-times"></i> Exit AR
+        </button>
+      </div>
+    </main>
+
+    <aside class="content-panel">
+      <section id="map-tab" class="tab-content active">
+        <div class="tab-header">
+          <h2>Map View</h2>
+          <select id="place-type" class="place-type-select" onchange="findNearbyPlaces()">
+            <option value="restaurant">Restaurants</option>
+            <option value="cafe">Cafés</option>
+            <option value="bar">Bars</option>
+            <option value="park">Parks</option>
+          </select>
+        </div>
+        <div class="map-tab-content">
+          <p>Use the map to explore locations. Click the <i class="fas fa-bookmark"></i> button to save places.</p>
+        </div>
+      </section>
+
+      <section id="favorites-tab" class="tab-content">
+        <div class="tab-header">
+          <h2>Saved Favorites</h2>
+          <div class="sort-options">
+            <button onclick="sortFavorites('date-desc')"><i class="fas fa-clock"></i> Newest</button>
+            <button onclick="sortFavorites('name')"><i class="fas fa-sort-alpha-down"></i> Name</button>
+          </div>
+        </div>
+        <div id="favorites-list" class="favorites-container"></div>
+      </section>
+
+      <section id="restaurants-tab" class="tab-content">
+        <div class="tab-header">
+          <h2>Nearby Places</h2>
+          <select id="place-type" class="place-type-select" onchange="findNearbyPlaces()">
+            <option value="restaurant">Restaurants</option>
+            <option value="cafe">Cafés</option>
+            <option value="bar">Bars</option>
+            <option value="park">Parks</option>
+          </select>
+        </div>
+        <div id="restaurants-list" class="places-container"></div>
+      </section>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5FR9Ab1qqgL8H8D-Ed-VLr9CKPiPovOU&libraries=places&callback=initMap" async defer></script>
+</body>
+</html>
