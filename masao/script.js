@@ -325,42 +325,146 @@ function deleteFavorite(index) {
 
 function findNearbyPlaces() {
   const type = document.getElementById("place-type").value || "restaurant";
-  const location = map.getCenter();
+  const container = document.getElementById("restaurants-list");
+  container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Finding nearby places...</div>';
 
-  if (!location) {
-    alert("Map not centered yet.");
-    return;
+  // Use current map center if geolocation fails
+  const defaultLocation = map.getCenter();
+  
+  const handleLocationSuccess = (position) => {
+    const location = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    };
+    searchNearbyPlaces(location);
+  };
+
+  const handleLocationError = (error) => {
+    console.warn("Geolocation error:", error);
+    // Use current map center as fallback
+    searchNearbyPlaces(defaultLocation);
+  };
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      handleLocationSuccess,
+      handleLocationError,
+      { timeout: 5000 }
+    );
+  } else {
+    searchNearbyPlaces(defaultLocation);
   }
+}
 
+function searchNearbyPlaces(location) {
+  const type = document.getElementById("place-type").value || "restaurant";
+  const container = document.getElementById("restaurants-list");
   const request = {
-    location,
-    radius: 1500,
-    type: [type],
+    location: location,
+    radius: 1000, // 1km radius
+    type: [type]
   };
 
   service.nearbySearch(request, (results, status) => {
-    const container = document.getElementById("restaurants-list");
     container.innerHTML = "";
-
+    
     if (status === google.maps.places.PlacesServiceStatus.OK && results.length) {
-      results.forEach(place => {
-        const div = document.createElement("div");
-        div.className = "clickable";
-        div.innerText = place.name;
-        div.onclick = () => {
-          map.setCenter(place.geometry.location);
-          map.setZoom(17);
-          new google.maps.Marker({
-            position: place.geometry.location,
-            map,
-            animation: google.maps.Animation.DROP,
-          });
-        };
-        container.appendChild(div);
+      results.slice(0, 15).forEach(place => {
+        if (!place.name || !place.geometry?.location) return;
+        
+        const placeElement = createPlaceElement(place);
+        container.appendChild(placeElement);
       });
     } else {
-      container.innerText = "No places found.";
+      container.innerHTML = `
+        <div class="no-results">
+          <i class="fas fa-map-marker-alt"></i>
+          <p>No ${type}s found near this location</p>
+          <button onclick="findNearbyPlaces()">Try Again</button>
+        </div>
+      `;
     }
+  });
+}
+
+function createPlaceElement(place) {
+  const div = document.createElement("div");
+  div.className = "place-item";
+  
+  // Create elements for place details
+  const placeInfo = document.createElement("div");
+  placeInfo.className = "place-info";
+  
+  const name = document.createElement("h4");
+  name.textContent = place.name;
+  
+  const address = document.createElement("p");
+  address.className = "place-address";
+  address.textContent = place.vicinity || "Address not available";
+  
+  placeInfo.appendChild(name);
+  placeInfo.appendChild(address);
+  
+  // Add rating if available
+  if (place.rating) {
+    const rating = createRatingElement(place.rating);
+    placeInfo.appendChild(rating);
+  }
+  
+  // Add action button
+  const action = document.createElement("button");
+  action.className = "place-action";
+  action.innerHTML = '<i class="fas fa-map-marker-alt"></i>';
+  action.onclick = () => centerOnPlace(place.geometry.location);
+  
+  div.appendChild(placeInfo);
+  div.appendChild(action);
+  
+  return div;
+}
+
+function createRatingElement(rating) {
+  const ratingDiv = document.createElement("div");
+  ratingDiv.className = "place-rating";
+  
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  
+  for (let i = 0; i < 5; i++) {
+    const star = document.createElement("i");
+    if (i < fullStars) {
+      star.className = "fas fa-star";
+    } else if (i === fullStars && hasHalfStar) {
+      star.className = "fas fa-star-half-alt";
+    } else {
+      star.className = "far fa-star";
+    }
+    ratingDiv.appendChild(star);
+  }
+  
+  const ratingText = document.createElement("span");
+  ratingText.textContent = rating.toFixed(1);
+  ratingDiv.appendChild(ratingText);
+  
+  return ratingDiv;
+}
+
+function centerOnPlace(location) {
+  if (typeof location === 'string') {
+    location = JSON.parse(location);
+  }
+  const latLng = new google.maps.LatLng(location.lat, location.lng);
+  map.setCenter(latLng);
+  map.setZoom(17);
+  
+  // Clear existing markers
+  clearMarkers();
+  
+  // Add new marker
+  new google.maps.Marker({
+    position: latLng,
+    map,
+    animation: google.maps.Animation.DROP
   });
 }
 
@@ -449,3 +553,127 @@ document.getElementById('darkModeToggle').addEventListener('change', (e) => {
   document.body.classList.toggle('dark-mode', e.target.checked);
   changeMapStyle(e.target.checked ? 'dark' : 'light');
 });
+
+
+
+// Update the existing script.js with these navigation functions
+function setupNavigation() {
+  // Highlight current page in navigation
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.main-nav a').forEach(link => {
+    if (link.getAttribute('href') === currentPage) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+
+  // Mobile menu toggle (if needed)
+  const mobileMenuToggle = document.createElement('button');
+  mobileMenuToggle.className = 'mobile-menu-toggle';
+  mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+  mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+  document.querySelector('header .container').appendChild(mobileMenuToggle);
+}
+
+function toggleMobileMenu() {
+  document.querySelector('.main-nav').classList.toggle('active');
+}
+
+// Update the DOMContentLoaded event listener
+window.addEventListener("DOMContentLoaded", () => {
+  checkLoginStatus();
+  setupNavigation();
+  
+  // Only run map-related code on the map page
+  if (window.location.pathname.includes('map.html')) {
+    initMap();
+  }
+});
+
+// Check login status on home page
+function checkHomeLoginStatus() {
+  const username = localStorage.getItem("username");
+  const isLoggedIn = localStorage.getItem("loggedIn") === "true";
+
+  if (isLoggedIn) {
+    document.getElementById("loginBtn").classList.add("hidden");
+    document.getElementById("userMenu").classList.remove("hidden");
+    document.getElementById("usernameDisplay").textContent = username;
+  } else {
+    document.getElementById("loginBtn").classList.remove("hidden");
+    document.getElementById("userMenu").classList.add("hidden");
+  }
+}
+
+// Initialize home page
+if (document.querySelector('.main-nav')) {
+  checkHomeLoginStatus();
+}
+
+// Mobile menu toggle functionality
+function setupMobileMenu() {
+  const menuToggle = document.querySelector('.mobile-menu-toggle');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  
+  if (menuToggle && mobileMenu) {
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+    });
+  }
+}
+
+// Update mobile login status display
+function updateMobileLoginStatus() {
+  const username = localStorage.getItem("username");
+  const isLoggedIn = localStorage.getItem("loggedIn") === "true";
+  const mobileUserMenu = document.getElementById("mobileUserMenu");
+  const mobileLoginBtn = document.getElementById("mobileLoginBtn");
+  const mobileUsernameDisplay = document.getElementById("mobileUsernameDisplay");
+
+  if (isLoggedIn) {
+    mobileUserMenu.classList.remove("hidden");
+    mobileLoginBtn.classList.add("hidden");
+    mobileUsernameDisplay.textContent = username;
+  } else {
+    mobileUserMenu.classList.add("hidden");
+    mobileLoginBtn.classList.remove("hidden");
+  }
+}
+
+// Initialize mobile menu and login status
+window.addEventListener("DOMContentLoaded", () => {
+  checkLoginStatus();
+  setupMobileMenu();
+  updateMobileLoginStatus();
+  
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', (e) => {
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const menuToggle = document.querySelector('.mobile-menu-toggle');
+    
+    if (mobileMenu.classList.contains('active') && 
+        !mobileMenu.contains(e.target) && 
+        !menuToggle.contains(e.target)) {
+      mobileMenu.classList.remove('active');
+    }
+  });
+});
+
+// Update both desktop and mobile login status
+function checkLoginStatus() {
+  const username = localStorage.getItem("username");
+  const isLoggedIn = localStorage.getItem("loggedIn") === "true";
+
+  if (isLoggedIn) {
+    document.getElementById("loginBtn").classList.add("hidden");
+    document.getElementById("userMenu").classList.remove("hidden");
+    document.getElementById("usernameDisplay").textContent = username;
+  } else {
+    document.getElementById("loginBtn").classList.remove("hidden");
+    document.getElementById("userMenu").classList.add("hidden");
+  }
+  
+  // Also update mobile login status
+  updateMobileLoginStatus();
+}
