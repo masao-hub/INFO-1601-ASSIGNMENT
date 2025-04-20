@@ -3,87 +3,99 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Geo Explorer</title>
+  <title>Geo Explorer - Home</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+  <!-- Header Section -->
   <header>
     <div class="container header-content">
       <h1><i class="fas fa-map-marker-alt"></i> Geo Explorer</h1>
-      <div class="header-right">
-        <label class="dark-toggle">
-          <input type="checkbox" id="darkModeToggle" /> 🌙
-        </label>
-        <div id="userMenu" class="user-menu hidden">
-          <span id="usernameDisplay"></span>
-          <div class="dropdown">
-            <button class="dropbtn">▼</button>
-            <div class="dropdown-content">
-              <a href="#" onclick="logout()">Logout</a>
-            </div>
-          </div>
-        </div>
-        <button id="loginBtn" onclick="window.location.href='login.html'">Login</button>
-      </div>
+      <nav class="main-nav">
+        <a href="index.html" class="active">Home</a>
+        <a href="map.html">Map</a>
+        <a href="about.html">About</a>
+        <a href="login.html">Login</a>
+      </nav>
     </div>
   </header>
 
-  <div class="main-layout">
-    <nav class="side-nav">
-      <button class="nav-btn" onclick="switchTab('map')">🗺️ Map</button>
-      <button class="nav-btn" onclick="switchTab('favorites')">⭐ Favorites</button>
-      <button class="nav-btn" onclick="switchTab('restaurants')">🍴 Nearby</button>
-    </nav>
-
-    <main class="main-content">
-      <div class="search-container">
-        <input id="search-box" type="text" placeholder="Search places..." />
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Explore the World Around You</h2>
+      <p>Discover nearby places, save your favorite locations, and navigate with ease using our interactive map tools.</p>
+      <div class="hero-buttons">
+        <a href="map.html" class="btn primary">Try the Map</a>
+        <a href="about.html" class="btn secondary">Learn More</a>
       </div>
+    </div>
+  </section>
 
-      <section id="map-tab" class="tab-content active">
-        <div id="map" class="centered-map"></div>
-        <div class="action-buttons">
-          <button onclick="findMyLocation()">My Location</button>
-          <select id="place-type" onchange="findNearbyPlaces()">
-            <option value="restaurant">Restaurants</option>
-            <option value="cafe">Cafes</option>
-            <option value="bar">Bars</option>
-          </select>
-          <button onclick="saveLocation()">Save Location</button>
-        </div>
-      </section>
-
-
-      
-      <div id="ar-container" class="hidden">
-        <video id="ar-video" autoplay></video>
-        <canvas id="ar-canvas"></canvas>
-        <button id="exit-ar" class="ar-button">Exit AR</button>
+  <!-- Features Section -->
+  <section class="features">
+    <h3>Why Choose Geo Explorer?</h3>
+    <div class="features-grid">
+      <div class="feature-card">
+        <i class="fas fa-map-marked-alt"></i>
+        <h4>Interactive Maps</h4>
+        <p>Explore with our easy-to-use map interface powered by Google Maps.</p>
       </div>
-      
-      <button id="ar-btn" class="ar-button">
-        <i class="fas fa-vr-cardboard"></i> AR View
-      </button>
+      <div class="feature-card">
+        <i class="fas fa-heart"></i>
+        <h4>Save Favorites</h4>
+        <p>Bookmark your favorite locations and access them anytime.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-utensils"></i>
+        <h4>Discover Places</h4>
+        <p>Find restaurants, cafes, and other points of interest near you.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-vr-cardboard"></i>
+        <h4>AR Experience</h4>
+        <p>Try our augmented reality view to explore your surroundings.</p>
+      </div>
+    </div>
+  </section>
 
-      <section id="favorites-tab" class="tab-content">
-        <h3>Favorites</h3>
-        <div id="favorites-list"></div>
-      </section>
+  <!-- Testimonials Section -->
+  <section class="testimonials">
+    <h3>What Our Users Say</h3>
+    <div class="testimonial-card">
+      <p>"Geo Explorer has completely changed how I discover new places in my city. The AR feature is amazing!"</p>
+      <div class="user">
+        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Sarah J.">
+        <span>Sarah J.</span>
+      </div>
+    </div>
+  </section>
 
-      <section id="restaurants-tab" class="tab-content">
-        <h3>Nearby Places</h3>
-        <div id="restaurants-list"></div>
-      </section>
-      
-    </main>
-  </div>
+  <!-- Footer Section -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">
+        <i class="fas fa-map-marker-alt"></i> Geo Explorer
+      </div>
+      <div class="footer-links">
+        <a href="about.html">About Us</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="social-links">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+    <div class="copyright">
+      &copy; 2023 Geo Explorer. All rights reserved.
+    </div>
+  </footer>
 
   <script src="script.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5FR9Ab1qqgL8H8D-Ed-VLr9CKPiPovOU&libraries=places&callback=initMap" async defer></script>
-
-
 </body>
 </html>
