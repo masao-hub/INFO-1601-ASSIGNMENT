@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Geo Explorer</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="login-body">
+  <div class="login-container">
+    <div class="login-left">
+      <div class="login-left-content">
+        <h1><i class="fas fa-map-marker-alt"></i> Geo Explorer</h1>
+        <p>Join our community of explorers and save your favorite locations.</p>
+      </div>
+    </div>
+    
+    <div class="login-right">
+      <button class="dark-mode-toggle">
+        <i class="fas fa-moon"></i>
+      </button>
+      
+      <div class="login-card">
+        <div class="login-logo">
+          <i class="fas fa-user-plus"></i>
+          <h2>Create Account</h2>
+        </div>
+        
+        <form class="login-form" id="registerForm">
+          <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="username" placeholder="Username" required>
+          </div>
+          
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="Email" required>
+          </div>
+          
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Password" required minlength="6">
+          </div>
+          
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+          </div>
+          
+          <div class="login-options">
+            <label class="remember-me">
+              <input type="checkbox" id="terms" required>
+              I agree to the <a href="#">Terms & Conditions</a>
+            </label>
+          </div>
+          
+          <button type="submit" class="login-btn">Register</button>
+          
+          <div class="login-footer">
+            Already have an account? <a href="login.html">Sign in</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+     if (!localStorage.getItem('geoExplorerUsers')) {
+      const defaultUsers = {
+        "bob": {
+          username: "bob",
+          email: "bob@example.com",
+          password: "bobpass",
+          createdAt: new Date().toISOString()
+        }
+      };
+      localStorage.setItem('geoExplorerUsers', JSON.stringify(defaultUsers));
+    }
+
+    // Dark mode toggle
+    document.querySelector('.dark-mode-toggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const icon = document.querySelector('.dark-mode-toggle i');
+      icon.classList.toggle('fa-moon');
+      icon.classList.toggle('fa-sun');
+    });
+
+    // Registration form handling
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      // Validation
+      if (password !== confirmPassword) {
+        Swal.fire('Error', 'Passwords do not match', 'error');
+        return;
+      }
+      
+      if (password.length < 6) {
+        Swal.fire('Error', 'Password must be at least 6 characters', 'error');
+        return;
+      }
+      
+      if (!document.getElementById('terms').checked) {
+        Swal.fire('Error', 'You must accept the terms and conditions', 'error');
+        return;
+      }
+      
+      // Get existing users
+      const users = JSON.parse(localStorage.getItem('geoExplorerUsers'));
+      
+      if (users[username]) {
+        Swal.fire('Error', 'Username already exists', 'error');
+        return;
+      }
+      
+      // Add new user
+      users[username] = {
+        username: username,
+        email: email,
+        password: password,
+        createdAt: new Date().toISOString()
+      };
+      
+      localStorage.setItem('geoExplorerUsers', JSON.stringify(users));
+      
+      Swal.fire('Success', 'Registration successful!', 'success').then(() => {
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html>
